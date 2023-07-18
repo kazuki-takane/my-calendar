@@ -1,4 +1,3 @@
-import React from "react";
 import { styled } from "@mui/material/styles";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import ArrowCircleLeftTwoToneIcon from "@mui/icons-material/ArrowCircleLeftTwoTone";
@@ -40,7 +39,7 @@ export const Nav = () => {
       <Tooltip title="翌月へ" arrow>
         <ArrowCircleRightTwoToneIcon
           color="success"
-          sx={{ mr: 2, "&:hover": { opacity: 0.7 } }}
+          sx={{ mr: 2, cursor: "pointer", "&:hover": { opacity: 0.7 } }}
           onClick={handleRightClick}
         />
       </Tooltip>

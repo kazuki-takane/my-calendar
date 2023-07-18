@@ -1,4 +1,3 @@
-import React from "react";
 import { CalendarDate } from "./CalendarDate";
 import { styled } from "@mui/material/styles";
 import { useRecoilValue } from "recoil";
@@ -6,43 +5,56 @@ import {
   calendarDateArray,
   targetDateState,
 } from "../../states/targetDateState";
-import { getDay, getMonth } from "date-fns";
+import { getDate, getMonth } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
+import { InputDialog } from "../dialog/InputDialog";
+
+const dayList: Array<string> = ["日", "月", "火", "水", "木", "金", "土"];
 
 export const CalendarBoard = () => {
-  const currentMonth = useRecoilValue(targetDateState);
-  let dateArray: Array<Array<Date>> = useRecoilValue(calendarDateArray);
+  const targetDate = useRecoilValue(targetDateState);
+  const dateArray: Array<Array<Date>> = useRecoilValue(calendarDateArray);
+  const today: Date = new Date();
+
   return (
     <div>
-      <SUl sx={{ display: "flex", flexWrap: "wrap", textAlign: "center" }}>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>日</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>月</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>火</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>水</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>木</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>金</SListItem>
-        <SListItem sx={{ borderBottom: "none", height: "22px" }}>土</SListItem>
-      </SUl>
-      <SUl sx={{ display: "flex", flexWrap: "wrap" }}>
+      <SDayList>
+        {dayList.map((day) => (
+          <SListItem key={uuidv4()}>{day}</SListItem>
+        ))}
+      </SDayList>
+      <SDateList>
         {dateArray.map((week) =>
           week.map((date) => (
             <CalendarDate
-              key={getDay(date)}
+              key={uuidv4()}
               date={date}
-              isCurrentMonth={getMonth(date) === getMonth(currentMonth)}
+              isCurrentMonth={getMonth(date) === getMonth(targetDate)}
+              isCurrentDate={getDate(date) === getDate(today)}
             />
           ))
         )}
-      </SUl>
+      </SDateList>
+      <InputDialog />
     </div>
   );
 };
 
-const SUl = styled("ul")``;
+const SDayList = styled("ul")`
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+`;
+const SDateList = styled("ul")`
+  display: flex;
+  flex-wrap: wrap;
+`;
 const SListItem = styled("li")`
   border: 1px solid #ccc;
   width: 13%;
   list-style: none;
   padding: 4px 8px;
-  height: 160px;
   font-weight: bold;
+  border-bottom: none;
+  height: 22px;
 `;

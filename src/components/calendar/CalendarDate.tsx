@@ -1,107 +1,59 @@
-import React, { useState } from "react";
 import { Schedule } from "./Schedule";
 import { styled } from "@mui/material/styles";
-import { getDate } from "date-fns";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  TextField,
-} from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import PlaceIcon from "@mui/icons-material/Place";
-import NotesIcon from "@mui/icons-material/Notes";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { ja } from "date-fns/locale";
+import { format, getDate } from "date-fns";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDialogOpen } from "../../states/isDialogOpen";
+import { Task, tasks } from "../../states/tasks";
+import { clickedDate } from "../../states/clickedDate";
 
 type Props = {
   date: Date;
   isCurrentMonth: boolean;
+  isCurrentDate: boolean;
 };
 
-export const CalendarDate = ({ date, isCurrentMonth }: Props) => {
-  const [open, setOpen] = useState(false);
+export const CalendarDate = ({
+  date,
+  isCurrentMonth,
+  isCurrentDate,
+}: Props) => {
+  const taskArray = useRecoilValue<Array<Task>>(tasks);
+  const setOpen = useSetRecoilState<boolean>(isDialogOpen);
+  const setClickedDate = useSetRecoilState<Date>(clickedDate);
 
   const handleClickOpen = () => {
+    setClickedDate(date);
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   return (
-    <SListItem sx={{ borderTop: "none" }} onClick={handleClickOpen}>
+    <SListItems onClick={handleClickOpen}>
       {isCurrentMonth ? (
-        <SDate>{getDate(date)}</SDate>
+        isCurrentDate ? (
+          <SDate sx={{ backgroundColor: "#333" }}>{getDate(date)}</SDate>
+        ) : (
+          <SDate>{getDate(date)}</SDate>
+        )
       ) : (
         <SDate sx={{ color: "#ccc" }}>{getDate(date)}</SDate>
       )}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
-          <TextField
-            autoFocus
-            multiline
-            margin="normal"
-            label="タイトルを追加"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <SDiv>
-            <AccessTimeIcon sx={{ mt: 2 }} />
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={ja}
-            >
-              <DemoContainer components={["MobileDatePicker"]}>
-                <DemoItem label="時間を追加">
-                  <DatePicker defaultValue={date} format="y年/M月/d日" />
-                </DemoItem>
-              </DemoContainer>
-            </LocalizationProvider>
-          </SDiv>
-          <SDiv>
-            <PlaceIcon sx={{ mt: 2 }} />
-            <TextField
-              multiline
-              label="場所を追加"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </SDiv>
-          <SDiv>
-            <NotesIcon sx={{ mt: 2 }} />
-            <TextField
-              multiline
-              label="説明を追加"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </SDiv>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
-      <Schedule />
-    </SListItem>
+      <STaskList>
+        {taskArray.map((task) => {
+          if (format(task.date, "Y年M月d日") === format(date, "Y年M月d日")) {
+            return <Schedule key={task.id} title={task.title} />;
+          }
+        })}
+      </STaskList>
+    </SListItems>
   );
 };
 
-const SListItem = styled("li")`
+const SListItems = styled("li")`
   border: 1px solid #ccc;
   width: 13%;
   list-style: none;
   padding: 4px 8px;
-  height: 160px;
+  border-top: 0;
 `;
 const SDate = styled("div")`
   text-align: center;
@@ -109,8 +61,19 @@ const SDate = styled("div")`
   font-size: 18px;
   font-weight: bold;
 `;
-const SDiv = styled("div")`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+const STaskList = styled("ul")`
+  height: 140px;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 10px;
+  }
 `;
