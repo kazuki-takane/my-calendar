@@ -15,12 +15,18 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { ja } from "date-fns/locale";
 
 import { useDialog } from "./hooks/useDialog";
+import { isEditingSchedule } from "../../states/isEditing";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { clickedSchedule } from "../../states/clickedSchedule";
 
 export const InputDialog = () => {
+  const [isEditing, setIsEditing] = useRecoilState<boolean>(isEditingSchedule);
+  const clickedScheduleTask = useRecoilValue(clickedSchedule);
+
   const {
-    open,
+    inputDialogOpen,
     scheduleDate,
-    handleClose,
+    handleInputDialogClose,
     handleChangeTitle,
     handleChangeDate,
     handleChangePlace,
@@ -28,21 +34,28 @@ export const InputDialog = () => {
     handleClickSave,
   } = useDialog();
 
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleClickSave();
+    }
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogContent>
+    <Dialog open={inputDialogOpen} onClose={handleInputDialogClose}>
+      <DialogContent sx={{ width: "400px", maxWidth: "85%" }}>
         <TextField
           autoFocus
-          multiline
           margin="normal"
           label="タイトルを追加"
           type="text"
           fullWidth
           variant="standard"
           onChange={handleChangeTitle}
+          onKeyDown={handleEnter}
+          defaultValue={isEditing ? clickedScheduleTask.title : ""}
         />
-        <SDiv>
-          <AccessTimeIcon sx={{ mt: 2 }} />
+        <SBox sx={{ justifyContent: "left", alignItems: "end" }}>
+          <AccessTimeIcon sx={{ mr: 1, mt: 2, mb: "1rem" }} />
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
             <DemoContainer components={["MobileDatePicker"]}>
               <DemoItem label="時間を追加">
@@ -55,9 +68,9 @@ export const InputDialog = () => {
               </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
-        </SDiv>
-        <SDiv>
-          <PlaceIcon sx={{ mt: 2 }} />
+        </SBox>
+        <SBox>
+          <PlaceIcon sx={{ mr: 1, mt: 2 }} />
           <TextField
             multiline
             label="場所を追加"
@@ -66,9 +79,9 @@ export const InputDialog = () => {
             variant="standard"
             onChange={handleChangePlace}
           />
-        </SDiv>
-        <SDiv>
-          <NotesIcon sx={{ mt: 2 }} />
+        </SBox>
+        <SBox>
+          <NotesIcon sx={{ mr: 1, mt: 2 }} />
           <TextField
             multiline
             label="説明を追加"
@@ -77,17 +90,17 @@ export const InputDialog = () => {
             variant="standard"
             onChange={handleChangeDescription}
           />
-        </SDiv>
+        </SBox>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>キャンセル</Button>
+        <Button onClick={handleInputDialogClose}>キャンセル</Button>
         <Button onClick={handleClickSave}>保存する</Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-const SDiv = styled("div")`
+export const SBox = styled("div")`
   display: flex;
   justify-content: space-between;
   align-items: center;

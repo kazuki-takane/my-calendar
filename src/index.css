@@ -8,6 +8,12 @@ body {
   color: #333;
 }
 
+@media screen and (max-width: 960px) {
+	body {
+    margin: 0.6rem;
+  }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

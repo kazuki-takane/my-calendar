@@ -26,7 +26,14 @@ export const Nav = () => {
         fontSize="large"
         sx={{ mr: 1 }}
       />
-      <Typography variant="h2" sx={{ fontSize: 24, mr: 4 }}>
+      <Typography
+        variant="h2"
+        sx={{
+          fontSize: 24,
+          mr: 4,
+          "@media (max-width: 960px)": { fontSize: 18 },
+        }}
+      >
         カレンダー
       </Typography>
       <Tooltip title="先月へ" arrow>
@@ -43,7 +50,10 @@ export const Nav = () => {
           onClick={handleRightClick}
         />
       </Tooltip>
-      <Typography variant="h2" sx={{ fontSize: 24 }}>
+      <Typography
+        variant="h2"
+        sx={{ fontSize: 24, "@media (max-width: 960px)": { fontSize: 18 } }}
+      >
         {format(targetDate, "Y年M月")}
       </Typography>
     </SNav>

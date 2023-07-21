@@ -1,20 +1,32 @@
 import React, { useState } from "react";
-import { useRecoilState } from "recoil";
-import { isDialogOpen } from "../../../states/isDialogOpen";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { isInputDialogOpen } from "../../../states/isInputDialogOpen";
 import { Task, tasks } from "../../../states/tasks";
 import { clickedDate } from "../../../states/clickedDate";
 import { v4 as uuidv4 } from "uuid";
+import { isScheduledDialogOpen } from "../../../states/isScheduledDialogOpen";
+import { isEditingSchedule } from "../../../states/isEditing";
 
 export const useDialog = () => {
-  const [open, setOpen] = useRecoilState<boolean>(isDialogOpen);
+  const [inputDialogOpen, setInputDialogOpen] =
+    useRecoilState<boolean>(isInputDialogOpen);
   const [scheduleTitle, setScheduleTitle] = useState<string>("");
   const [scheduleDate, setScheduleDate] = useRecoilState<Date>(clickedDate);
   const [schedulePlace, setSchedulePlace] = useState<string>("");
   const [scheduleDescription, setScheduleDescription] = useState<string>("");
   const [schedule, setSchedule] = useRecoilState<Array<Task>>(tasks);
+  const setIsEditing = useSetRecoilState(isEditingSchedule);
 
-  const handleClose = () => {
-    setOpen(false);
+  const [scheduledDialogOpen, setScheduledDialogOpen] = useRecoilState<boolean>(
+    isScheduledDialogOpen
+  );
+
+  const handleInputDialogClose = () => {
+    setScheduleTitle("");
+    setSchedulePlace("");
+    setScheduleDescription("");
+    setIsEditing(false);
+    setInputDialogOpen(false);
   };
 
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +51,9 @@ export const useDialog = () => {
   };
 
   const handleClickSave = () => {
+    if (scheduleTitle === "") {
+      return;
+    }
     const newTask = {
       id: uuidv4(),
       title: scheduleTitle,
@@ -48,22 +63,28 @@ export const useDialog = () => {
     };
 
     setSchedule([...schedule, newTask]);
-    handleClose();
+    handleInputDialogClose();
+  };
+
+  const handleScheduledDialogClose = () => {
+    setScheduledDialogOpen(false);
   };
 
   return {
-    open,
-    setOpen,
+    inputDialogOpen,
+    setInputDialogOpen,
     scheduleTitle,
     scheduleDate,
     schedulePlace,
     scheduleDescription,
     schedule,
-    handleClose,
+    handleInputDialogClose,
     handleChangeTitle,
     handleChangeDate,
     handleChangePlace,
     handleChangeDescription,
     handleClickSave,
+    scheduledDialogOpen,
+    handleScheduledDialogClose,
   };
 };
