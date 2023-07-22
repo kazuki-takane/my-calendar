@@ -6,6 +6,7 @@ import { clickedDate } from "../../../states/clickedDate";
 import { v4 as uuidv4 } from "uuid";
 import { isScheduledDialogOpen } from "../../../states/isScheduledDialogOpen";
 import { isEditingSchedule } from "../../../states/isEditing";
+import { clickedSchedule } from "../../../states/clickedSchedule";
 
 export const useDialog = () => {
   const [inputDialogOpen, setInputDialogOpen] =
@@ -15,7 +16,9 @@ export const useDialog = () => {
   const [schedulePlace, setSchedulePlace] = useState<string>("");
   const [scheduleDescription, setScheduleDescription] = useState<string>("");
   const [schedule, setSchedule] = useRecoilState<Array<Task>>(tasks);
-  const setIsEditing = useSetRecoilState(isEditingSchedule);
+  const [isEditing, setIsEditing] = useRecoilState(isEditingSchedule);
+  const [clickedScheduleTask, setClickedScheduleTask] =
+    useRecoilState(clickedSchedule);
 
   const [scheduledDialogOpen, setScheduledDialogOpen] = useRecoilState<boolean>(
     isScheduledDialogOpen
@@ -51,18 +54,46 @@ export const useDialog = () => {
   };
 
   const handleClickSave = () => {
-    if (scheduleTitle === "") {
-      return;
-    }
-    const newTask = {
-      id: uuidv4(),
-      title: scheduleTitle,
-      date: scheduleDate,
-      place: schedulePlace,
-      description: scheduleDescription,
-    };
+    let title: string = scheduleTitle;
+    let place: string = schedulePlace;
+    let description: string = scheduleDescription;
+    if (isEditing) {
+      if (title === "") {
+        title = clickedScheduleTask.title;
+      }
+      if (place === "") {
+        place = clickedScheduleTask.place;
+      }
+      if (description === "") {
+        description = clickedScheduleTask.description;
+      }
+      const editedTask = {
+        id: clickedScheduleTask.id,
+        title: title,
+        date: scheduleDate,
+        place: place,
+        description: description,
+      };
+      const newTasks = schedule.slice();
+      const index = newTasks.indexOf(clickedScheduleTask);
+      const newEditedTask = newTasks.splice(index, 1, editedTask);
+      setClickedScheduleTask(newEditedTask[0]);
+      setSchedule(newTasks);
+      console.log(newEditedTask[0]);
+    } else {
+      if (scheduleTitle === "") {
+        return;
+      }
+      const newTask = {
+        id: uuidv4(),
+        title: scheduleTitle,
+        date: scheduleDate,
+        place: schedulePlace,
+        description: scheduleDescription,
+      };
 
-    setSchedule([...schedule, newTask]);
+      setSchedule([...schedule, newTask]);
+    }
     handleInputDialogClose();
   };
 

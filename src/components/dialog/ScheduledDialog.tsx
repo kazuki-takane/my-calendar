@@ -33,6 +33,7 @@ export const ScheduledDialog = () => {
   const handleEditClick = () => {
     setIsEditing(true);
     setIsEditDialogOpen(true);
+    handleScheduledDialogClose();
   };
 
   const handleDeleteClick = () => {

@@ -78,6 +78,7 @@ export const InputDialog = () => {
             fullWidth
             variant="standard"
             onChange={handleChangePlace}
+            defaultValue={isEditing ? clickedScheduleTask.place : ""}
           />
         </SBox>
         <SBox>
@@ -89,6 +90,7 @@ export const InputDialog = () => {
             fullWidth
             variant="standard"
             onChange={handleChangeDescription}
+            defaultValue={isEditing ? clickedScheduleTask.description : ""}
           />
         </SBox>
       </DialogContent>
