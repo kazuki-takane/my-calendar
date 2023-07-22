@@ -1,6 +1,7 @@
+import React from "react";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
-import { RecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
+
 import { isScheduledDialogOpen } from "../../states/isScheduledDialogOpen";
 import { Task } from "../../states/tasks";
 import { clickedSchedule } from "../../states/clickedSchedule";
@@ -16,7 +17,7 @@ export const Schedule = ({ task }: Props) => {
   );
   const setClickedSchedule = useSetRecoilState<Task>(clickedSchedule);
   const setClickedDate = useSetRecoilState<Date>(clickedDate);
-  const clickedScheduleTask = useRecoilValue(clickedSchedule);
+  console.log("schedule rendering");
 
   const handleScheduleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();

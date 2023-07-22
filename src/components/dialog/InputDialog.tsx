@@ -1,3 +1,4 @@
+import { useRecoilValue } from "recoil";
 import { styled } from "@mui/material/styles";
 import {
   Button,
@@ -16,11 +17,10 @@ import { ja } from "date-fns/locale";
 
 import { useDialog } from "./hooks/useDialog";
 import { isEditingSchedule } from "../../states/isEditing";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { clickedSchedule } from "../../states/clickedSchedule";
 
 export const InputDialog = () => {
-  const [isEditing, setIsEditing] = useRecoilState<boolean>(isEditingSchedule);
+  const isEditing = useRecoilValue<boolean>(isEditingSchedule);
   const clickedScheduleTask = useRecoilValue(clickedSchedule);
 
   const {

@@ -1,7 +1,9 @@
-import { Schedule } from "./Schedule";
+import { memo } from "react";
 import { styled } from "@mui/material/styles";
 import { format, getDate } from "date-fns";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+
+import { Schedule } from "./Schedule";
 import { isInputDialogOpen } from "../../states/isInputDialogOpen";
 import { Task, tasks } from "../../states/tasks";
 import { clickedDate } from "../../states/clickedDate";
@@ -12,14 +14,15 @@ type Props = {
   isCurrentDate: boolean;
 };
 
-export const CalendarDate = ({
+export const CalendarDate = memo(({
   date,
   isCurrentMonth,
   isCurrentDate,
 }: Props) => {
-  const taskArray = useRecoilValue<Array<Task>>(tasks);
+  const taskArray: Array<Task> = useRecoilValue(tasks);
   const setInputDialogOpen = useSetRecoilState<boolean>(isInputDialogOpen);
   const setClickedDate = useSetRecoilState<Date>(clickedDate);
+  console.log("date rendering");
 
   const handleDateClick = () => {
     setClickedDate(date);
@@ -48,7 +51,7 @@ export const CalendarDate = ({
       </STaskList>
     </SListItems>
   );
-};
+});
 
 const SListItems = styled("li")`
   border: 1px solid #ccc;

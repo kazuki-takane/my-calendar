@@ -1,21 +1,24 @@
-import { CalendarDate } from "./CalendarDate";
+import { memo } from "react";
 import { styled } from "@mui/material/styles";
 import { useRecoilValue } from "recoil";
+import { format, getMonth } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
+
+import { CalendarDate } from "./CalendarDate";
+import { InputDialog } from "../dialog/InputDialog";
+import { ScheduledDialog } from "../dialog/ScheduledDialog";
 import {
   calendarDateArray,
   targetDateState,
 } from "../../states/targetDateState";
-import { format, getMonth } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
-import { InputDialog } from "../dialog/InputDialog";
-import { ScheduledDialog } from "../dialog/ScheduledDialog";
 
 const dayList: Array<string> = ["日", "月", "火", "水", "木", "金", "土"];
 
-export const CalendarBoard = () => {
-  const targetDate = useRecoilValue(targetDateState);
+export const CalendarBoard = memo(() => {
+  const targetDate: Date = useRecoilValue(targetDateState);
   const dateArray: Array<Array<Date>> = useRecoilValue(calendarDateArray);
   const today: Date = new Date();
+  console.log("board rendering");
 
   return (
     <SContainer>
@@ -42,7 +45,7 @@ export const CalendarBoard = () => {
       <ScheduledDialog />
     </SContainer>
   );
-};
+});
 
 const SContainer = styled("div")``;
 

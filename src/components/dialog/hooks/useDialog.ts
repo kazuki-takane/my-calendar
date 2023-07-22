@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { isInputDialogOpen } from "../../../states/isInputDialogOpen";
 import { Task, tasks } from "../../../states/tasks";
 import { clickedDate } from "../../../states/clickedDate";
@@ -79,7 +79,6 @@ export const useDialog = () => {
       const newEditedTask = newTasks.splice(index, 1, editedTask);
       setClickedScheduleTask(newEditedTask[0]);
       setSchedule(newTasks);
-      console.log(newEditedTask[0]);
     } else {
       if (scheduleTitle === "") {
         return;

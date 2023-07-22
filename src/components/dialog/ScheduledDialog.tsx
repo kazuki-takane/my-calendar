@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { format } from "date-fns";
+import { styled } from "styled-components";
 import {
   Dialog,
   DialogContent,
@@ -11,24 +13,21 @@ import NotesIcon from "@mui/icons-material/Notes";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDialog } from "./hooks/useDialog";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { clickedSchedule } from "../../states/clickedSchedule";
-import { format } from "date-fns";
+
 import { SBox } from "./InputDialog";
-import { styled } from "styled-components";
+import { useDialog } from "./hooks/useDialog";
+import { clickedSchedule } from "../../states/clickedSchedule";
 import { Task, tasks } from "../../states/tasks";
 import { isInputDialogOpen } from "../../states/isInputDialogOpen";
 import { isEditingSchedule } from "../../states/isEditing";
 
 export const ScheduledDialog = () => {
-  const clickedScheduleTask = useRecoilValue(clickedSchedule);
+  const clickedScheduleTask: Task = useRecoilValue(clickedSchedule);
   const [currentTasks, setCurrentTasks] = useRecoilState<Array<Task>>(tasks);
-  const [isEditDialogOpen, setIsEditDialogOpen] =
-    useRecoilState<boolean>(isInputDialogOpen);
+  const setIsEditDialogOpen = useSetRecoilState<boolean>(isInputDialogOpen);
   const { scheduledDialogOpen, handleScheduledDialogClose } = useDialog();
 
-  const [isEditing, setIsEditing] = useRecoilState<boolean>(isEditingSchedule);
+  const setIsEditing = useSetRecoilState<boolean>(isEditingSchedule);
 
   const handleEditClick = () => {
     setIsEditing(true);
